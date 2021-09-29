@@ -7,7 +7,7 @@ The challenge contains 4 required tasks:
 
 Task 1: Create a bucket
     In the console, click the Navigation menu > Storage.
-
+      Name can be ProjectID(unique).
     Click Create a bucket.
 
 
@@ -15,7 +15,7 @@ Task 2: Create a Pub/Sub topic
     In the console, click the Navigation menu > Pub/Sub > Topics.
 
     Click Create a topic.
-
+      Name can be MyTopic.
     * Make sure you remember the topic name, which will be used in Task 3.
 
 Task 3: Create the Cloud Function
@@ -24,7 +24,7 @@ Task 3: Create the Cloud Function
       Click Create function.
 
       In the Create function dialog, enter the following values:
-
+      Name can be cloud function.
       Field	Value
       Function to execute	thumbnail
       Runtime	Node.js 8
