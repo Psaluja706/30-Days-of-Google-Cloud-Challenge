@@ -43,3 +43,4 @@ Task 4: Remove the previous cloud engineer
           Find the second user.
 
           Click the pencil icon, select Delete.
+          and you score 100/100 in the lab.
