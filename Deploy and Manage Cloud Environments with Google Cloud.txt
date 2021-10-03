@@ -1,5 +1,8 @@
-Task 1: Create Production Environment
 
+TASK 1:
+GO TO COMPUTE ENGINE > VM INSTANCES > OPEN SSH OF kraken-jumphost
+
+TYPE THE COMMANDS IN SSH:
 
 cd /work/dm
 
@@ -7,15 +10,14 @@ sed -i s/SET_REGION/us-east1/g prod-network.yaml
 
 gcloud deployment-manager deployments create prod-network --config=prod-network.yaml
 
-
-
-
 gcloud config set compute/zone us-east1-b
 
 gcloud container clusters create kraken-prod \
           --num-nodes 2 \
           --network kraken-prod-vpc \
-          --subnetwork kraken-prod-subnet
+          --subnetwork kraken-prod-subnet\
+          --zone us-east1-b
+
 
 gcloud container clusters get-credentials kraken-prod
 
@@ -24,30 +26,39 @@ cd /work/k8s
 for F in $(ls *.yaml); do kubectl create -f $F; done
 
 
-
-
-Task 2: Configure the admin host
-
-
-Create kraken-admin
-
+TASK 2
+STAY IN SSH AND TYPE THESE COMMANDS BELOW:
 
 gcloud config set compute/zone us-east1-b
 
 gcloud compute instances create kraken-admin --network-interface="subnet=kraken-mgmt-subnet" --network-interface="subnet=kraken-prod-subnet"
 
+OPEN MONITORING > ALERTING > CREATE POLICY
 
-Create alert:
-Open monitoring
+ADD CONDITION
 
-Create an alert
+RESOURCE TYPE: VM Instance
+METRIC: CPU Utilization
+FILTER: Instance Name
+Instance Value: kraken-admin
+CLICK APPLY
+THRESHOLD: 50
+FOR: 1 minute
 
-Configure the policy to email your email when jumphost is cpu utilization is above 50% for 1 min.
+PRESS NEXT
+
+MANAGE NOTIFICATION
+ADD EMAIL
+
+PRESS NEXT
+
+ALERT NAME: kraken-admin
+
+PRESS CREATE
 
 
-Task 3: Verify the Spinnaker deployment
-
-Use cloudshell and run
+TASK 3
+OPEN CLOUD SHELL
 
 gcloud config set compute/zone us-east1-b
 
@@ -55,21 +66,22 @@ gcloud container clusters get-credentials spinnaker-tutorial
 
 DECK_POD=$(kubectl get pods --namespace default -l "cluster=spin-deck" -o jsonpath="{.items[0].metadata.name}")
 
+
 kubectl port-forward --namespace default $DECK_POD 8080:9000 >> /dev/null &
 
+CLOUD SHELL > WEB PREVIEW
 
+SPINNAKER WILL OPEN
 
+CLICK ON APPLICATIONS
 
+CLICK ON "sample"
 
-Go to cloudshell webpreview and go to applications->sample
+CLICK ON "PIPELINES"
 
-Open pipelines and manually run the pipeline if it has not already running.  Approve the deployment to production.  Check the production frontend endpoint (use http, not the default https)
+HOVER OVER THE ORANGE BLOCK AND PRESS "continue"
 
-Back in cloudshell run these commands to push a change
-
-
-
-
+ONCE EVERYTHING IS DEPLOYED COME BACK TO CLOUD SHELL
 
 gcloud config set compute/zone us-east1-b
 
@@ -77,14 +89,21 @@ gcloud source repos clone sample-app
 
 cd sample-app
 
-touch a
+touch aB  #CHANGE THE NAME HERE IF THIS IS NOT WORKING
 
 git config --global user.email "$(gcloud config get-value account)"
 
-git config --global user.name "Student"
+git config --global user.name "Student1" #can change student1 name
 
-git commit -a -m "change"
+git commit -aB -m "change1" #IF YOU HAVE CHANGED ABOVE ALSO MAKE  
+					 CHANGES HERE. ALSO CHANGE “change1” if
+					 Required during 2nd or 3rd deployment
 
-git tag v1.0.1
+git tag v1.0.2  #also change tags in 2nd or 3rd deployment attempt
 
 git push --tags
+
+TRY CHANGING TAG NAMES, commit etc... IT WILL WORK.
+
+GO TO SPINNAKER
+DEPLOY AGAIN
