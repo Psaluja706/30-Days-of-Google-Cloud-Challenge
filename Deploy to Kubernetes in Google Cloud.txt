@@ -49,12 +49,21 @@ kubectl create -f k8s/service.yaml
 
 git merge origin/kurt-dev
 kubectl edit deployment valkyrie-dev
+Press i
+<make replicas:3>
+esc
+:wq enter
 ******************************************************************************************************************************
 step 5:------------ Update the deployment with a new version of valkyrie-app -----------------
 
 docker build -t gcr.io/$GOOGLE_CLOUD_PROJECT/valkyrie-app:v0.0.2 . 
 docker push gcr.io/$GOOGLE_CLOUD_PROJECT/valkyrie-app:v0.0.2
 kubectl edit deployment valkyrie-dev
+
+Press i
+<make image:........................v0.0.2>
+esc
+:wq enter
 
 docker ps
 
@@ -66,6 +75,10 @@ kubectl port-forward $POD_NAME 8080:8080 >> /dev/null &
 printf $(kubectl get secret cd-jenkins -o jsonpath="{.data.jenkins-admin-password}" | base64 --decode);echo
 
 gcloud source repos list
+
+-------Preview Your jenkins & do some changes:
+1)Manage Jenkins - Manage Credentials - Global - Add some credentials - In dropdown select Google services Accpounts from matadata , OK- 
+2) Dashboard - New item - Name="valkyrie-dev", pipeline, OK- Scroll down in Pipeline Definations select "SCM" , Git - Copy repoURL from Shell - Credentials="Qwiklabs" SAVE
 
 sed -i "s/green/orange/g" source/html.go
 
@@ -80,6 +93,7 @@ git commit -m "built pipeline init"
 git push 
 
 in last on jenkins windows tamplate just click on built which is in nevigation manu 
+<Press Built now>
 
 #############################################################################################################################
 ******************************************************************************************************************************
